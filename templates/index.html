@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Society Payment System{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-lg">
+                <div class="card-body py-5">
+                    <i class="fas fa-building fa-4x text-primary mb-3"></i>
+                    <h1 class="display-4">Society Payment System</h1>
+                    <p class="lead">Smart maintenance collection, expense tracking, and visitor management</p>
+                    <hr class="my-4">
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4 gap-3">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="row mt-5 text-center">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-receipt fa-3x text-success mb-3"></i>
+                    <h5>Auto Receipt & WhatsApp</h5>
+                    <p>Instant payment receipts sent to residents via WhatsApp</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+                    <h5>Real-time Accounting</h5>
+                    <p>Track income, expenses, profit/loss with detailed reports</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-users fa-3x text-warning mb-3"></i>
+                    <h5>Multiple Roles</h5>
+                    <p>Admin, Collector, Resident, Security – dedicated dashboards</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
