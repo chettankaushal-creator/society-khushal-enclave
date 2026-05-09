@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Resident Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 d-md-block bg-dark sidebar vh-100">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white active" href="{{ url_for('user.dashboard') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('user.payment_history') }}">
+                            <i class="fas fa-history"></i> Payment History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('user.pending_dues') }}">
+                            <i class="fas fa-clock"></i> Pending Dues
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('user.send_visitor_request') }}">
+                            <i class="fas fa-paper-plane"></i> Send Visitor Request
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('user.my_visitors') }}">
+                            <i class="fas fa-users"></i> My Visitors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('user.complaints') }}">
+                            <i class="fas fa-comment-dots"></i> Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('user.profile') }}">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('user.notifications') }}">
+                            <i class="fas fa-bell"></i> Notifications
+                            {% if notification_count > 0 %}
+                                <span class="badge bg-danger ms-2">{{ notification_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1>Welcome, {{ house.owner_name }}!</h1>
+                <div class="text-muted">{{ current_date }} | {{ current_time }}</div>
+            </div>
+
+            <!-- House Info Card -->
+            <div class="card mb-4 bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-home"></i> House: {{ house.house_no }}</h5>
+                    <p class="card-text">Monthly Maintenance: ₹{{ "%.2f"|format(house.monthly_maintenance) }}</p>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h6 class="card-title">Total Paid</h6>
+                            <h3>₹{{ "%.2f"|format(total_paid) }}</h3>
+                            <small>{{ payment_count }} transactions</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-info">
+                        <div class="card-body">
+                            <h6 class="card-title">Last Payment</h6>
+                            <h3>
+                                {% if last_payment %}
+                                    {{ last_payment.payment_date.strftime('%d-%m-%Y') }}
+                                {% else %}
+                                    No Payment
+                                {% endif %}
+                            </h3>
+                            <small>
+                                {% if last_payment %}
+                                    ₹{{ "%.2f"|format(last_payment.amount) }} for {{ last_payment.month }}
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <h6 class="card-title">Pending Dues</h6>
+                            <h3>₹{{ "%.2f"|format(total_pending_amount) }}</h3>
+                            <small>{{ pending_months|length }} months pending</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger">
+                        <div class="card-body">
+                            <h6 class="card-title">Pending Visitors</h6>
+                            <h3>{{ pending_visitors|length }}</h3>
+                            <small>Need your approval</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Visitors Section -->
+            {% if pending_visitors %}
+            <div class="card mb-4">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="fas fa-bell"></i> Pending Visitor Approvals</h5>
+                </div>
+                <div class="card-body">
+                    {% for visitor in pending_visitors %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <h6>{{ visitor.visitor_name }}</h6>
+                        <p><i class="fas fa-phone"></i> {{ visitor.visitor_phone or 'N/A' }} | 
+                           <i class="fas fa-car"></i> {{ visitor.visitor_vehicle or 'N/A' }}</p>
+                        <p><i class="fas fa-calendar"></i> Expected: {{ visitor.expected_date.strftime('%d-%m-%Y') if visitor.expected_date else 'N/A' }}</p>
+                        <p><i class="fas fa-info-circle"></i> Purpose: {{ visitor.purpose }}</p>
+                        <a href="{{ url_for('user.approve_visitor', visitor_id=visitor.id, action='approve') }}" 
+                           class="btn btn-success btn-sm">Approve</a>
+                        <a href="{{ url_for('user.approve_visitor', visitor_id=visitor.id, action='reject') }}" 
+                           class="btn btn-danger btn-sm" onclick="return confirm('Reject this request?')">Reject</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Recent Payments Table -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-history"></i> Recent Payments</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Receipt No</th>
+                                    <th>Month</th>
+                                    <th>Year</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in recent_payments %}
+                                <tr>
+                                    <td>{{ payment.receipt_no or '#' ~ payment.id }}</td>
+                                    <td>{{ payment.month }}</td>
+                                    <td>{{ payment.year }}</td>
+                                    <td class="text-success">₹{{ "%.2f"|format(payment.amount) }}</td>
+                                    <td>{{ payment.method }}</td>
+                                    <td>{{ payment.payment_date.strftime('%d-%m-%Y') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('user.view_receipt', payment_id=payment.id) }}" 
+                                           class="btn btn-sm btn-primary" target="_blank">
+                                            <i class="fas fa-download"></i> Receipt
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No payment records found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Dues Section -->
+            {% if pending_months %}
+            <div class="card mb-4">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="fas fa-clock"></i> Pending Dues</h5>
+                </div>
+                <div class="card-body">
+                    {% for pending in pending_months %}
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                        <span>{{ pending.month }} {{ pending.year }}</span>
+                        <span class="text-danger">₹{{ "%.2f"|format(pending.amount) }}</span>
+                    </div>
+                    {% endfor %}
+                    <div class="mt-3">
+                        <a href="{{ url_for('user.pending_dues') }}" class="btn btn-warning btn-sm">View All</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+{% endblock %}
