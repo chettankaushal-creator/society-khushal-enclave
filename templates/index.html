@@ -1,56 +1,62 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Society Payment System{% endblock %}
+{% block title %}Login - Society Payment System{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <div class="card shadow-lg">
-                <div class="card-body py-5">
-                    <i class="fas fa-building fa-4x text-primary mb-3"></i>
-                    <h1 class="display-4">Society Payment System</h1>
-                    <p class="lead">Smart maintenance collection, expense tracking, and visitor management</p>
-                    <hr class="my-4">
-                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4 gap-3">
+<div class="container">
+    <div class="row justify-content-center min-vh-100 align-items-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-building fa-3x text-primary"></i>
+                        <h3 class="mt-2">Welcome Back</h3>
+                        <p class="text-muted">Login to your account</p>
+                    </div>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-user"></i> Username / House Number
+                            </label>
+                            <input type="text" name="username" class="form-control form-control-lg" 
+                                   placeholder="Enter your username or house number" required autofocus>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-lock"></i> Password
+                            </label>
+                            <input type="password" name="password" id="password" 
+                                   class="form-control form-control-lg" placeholder="Enter your password" required>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="showPassword">
+                            <label class="form-check-label" for="showPassword">Show Password</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
                             <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
+                        </button>
+                    </form>
+                    
+                    <hr class="my-4">
+                    <div class="text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i> Use your registered username/house number and password
+                        </small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Features Section -->
-    <div class="row mt-5 text-center">
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <i class="fas fa-receipt fa-3x text-success mb-3"></i>
-                    <h5>Auto Receipt & WhatsApp</h5>
-                    <p>Instant payment receipts sent to residents via WhatsApp</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
-                    <h5>Real-time Accounting</h5>
-                    <p>Track income, expenses, profit/loss with detailed reports</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <i class="fas fa-users fa-3x text-warning mb-3"></i>
-                    <h5>Multiple Roles</h5>
-                    <p>Admin, Collector, Resident, Security – dedicated dashboards</p>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
+
+<script>
+    document.getElementById('showPassword').addEventListener('change', function() {
+        var passwordInput = document.getElementById('password');
+        passwordInput.type = this.checked ? 'text' : 'password';
+    });
+</script>
 {% endblock %}
