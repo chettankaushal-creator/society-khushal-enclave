@@ -7,7 +7,8 @@ cryptography==41.0.7
 gunicorn==21.2.0
 python-dotenv==1.0.0
 requests==2.31.0
-Pillow==10.1.0
 openpyxl==3.1.2
 reportlab==4.0.7
 Werkzeug==2.3.0
+# Remove Pillow temporarily or use older version
+Pillow==9.5.0
