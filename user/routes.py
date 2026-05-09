@@ -1,8 +1,9 @@
+from datetime import datetime, date
+import os
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session, send_file
 from flask_login import login_required, current_user
 from models import db, House, Payment, Visitor, Complaint, Notification, Announcement
-from datetime import datetime, date
-import os
+
 
 user_bp = Blueprint('user', __name__)
 
